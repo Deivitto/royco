@@ -1,0 +1,7 @@
+forge verify-contract 0xC0bd79DEA95c1E1C474CE29d489E81dFFcf15d49 PointsFactory \
+  --chain-id 999 \
+  --verifier sourcify \
+  --verifier-url https://sourcify.parsec.finance/verify \
+  --optimizer-runs 5000 \
+  --via-ir \
+  --compiler-version "0.8.27" \

@@ -21,13 +21,13 @@ contract RecipeVerifier is RecipeMarketHubTestBase {
 
     function setUp() public {
         // Replace this with the correct network if needed
-        fork = vm.createFork(MAINNET_RPC_URL);
+        fork = vm.createFork("https://phoenix-rpc.plumenetwork.xyz");
 
         // Replace with the correct RecipeMarketHub instance
-        RECIPE_MARKET_HUB = RecipeMarketHub(0x783251f103555068c1E9D755f69458f39eD937c0);
+        RECIPE_MARKET_HUB = RecipeMarketHub(0x027ef18525876138bEc202aA4411538CE4B2f4ca);
 
         // Replace with the market hash of the market you want to verify
-        MARKET_HASH = 0xea47034ba4ba711a3c9b3d87c84149e7666040e2a31389e8594778feddb28ce2;
+        MARKET_HASH = 0x3b8a0521b465839cdfe5370ffe0d67259adc91424339ccee8db144dae3f742f1;
     }
 
     function getRoleOrAddress(address candidate, address ap, address wallet, address hub) internal pure returns (string memory) {
@@ -47,7 +47,7 @@ contract RecipeVerifier is RecipeMarketHubTestBase {
         (, ERC20 marketInputToken, uint256 lockupTime,,,,) = RECIPE_MARKET_HUB.marketHashToWeirollMarket(MARKET_HASH);
 
         // Tune this amount for total offer amount
-        uint256 offerAmount = 50_000 * (10 ** (marketInputToken.decimals()));
+        uint256 offerAmount = 1000 * (10 ** (marketInputToken.decimals()));
         // Tune this to simulate this amount of APs filling the offer
         uint256 numDepositors = 1;
 
@@ -134,7 +134,7 @@ contract RecipeVerifier is RecipeMarketHubTestBase {
         // -------------------------
 
         // Time travel to when the deposits are withdrawable
-        vm.warp(block.timestamp + lockupTime);
+        // vm.warp(block.timestamp + lockupTime);
 
         console2.log("");
         console2.log("-----------------------------------------------------");
@@ -148,7 +148,7 @@ contract RecipeVerifier is RecipeMarketHubTestBase {
             vm.recordLogs();
 
             vm.startPrank(aps[i]);
-            RECIPE_MARKET_HUB.executeWithdrawalScript(weirollWallets[i]);
+            RECIPE_MARKET_HUB.forfeit(weirollWallets[i], true);
             vm.stopPrank();
 
             Vm.Log[] memory withdrawLogs = vm.getRecordedLogs();
